@@ -39,7 +39,7 @@ internal static class Installer
         if (!IsRunningInstalled)
         {
             Directory.CreateDirectory(InstallFolder);
-            File.Copy(CurrentExe, InstalledExe, overwrite: true);
+            CopyWithRetry(CurrentExe, InstalledExe);
         }
 
         CreateShortcut(ShortcutPath, InstalledExe);
@@ -93,6 +93,23 @@ internal static class Installer
                 CreateNoWindow = true,
                 UseShellExecute = false,
             });
+        }
+    }
+
+    // When updating, the previous version has just been told to exit and may still hold its exe for a moment.
+    private static void CopyWithRetry(string source, string target)
+    {
+        for (int attempt = 1; ; attempt++)
+        {
+            try
+            {
+                File.Copy(source, target, overwrite: true);
+                return;
+            }
+            catch (IOException) when (attempt < 10)
+            {
+                Thread.Sleep(300);
+            }
         }
     }
 

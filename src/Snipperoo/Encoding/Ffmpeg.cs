@@ -15,21 +15,16 @@ internal sealed class Ffmpeg
         FfprobePath = ffprobePath;
     }
 
-    // winget's shim folder; checked directly because a fresh install is not on this process's PATH yet.
-    private static readonly string WingetLinks = Path.Combine(
-        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "WinGet", "Links");
+    private static readonly string WingetFolder = Path.Combine(
+        Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "WinGet");
 
     /// <summary>
-    /// Looks in <paramref name="configuredPath"/>, next to the exe, on PATH, then in winget's Links folder.
-    /// ffprobe is expected next to ffmpeg. Returns null if either is missing.
+    /// Finds ffmpeg with ffprobe next to it, or returns null. Looks at <paramref name="configuredPath"/>, next to the
+    /// exe, Snipperoo's own download, PATH, then winget's folders.
     /// </summary>
     public static Ffmpeg? Locate(string configuredPath)
     {
-        IEnumerable<string> candidates = Environment.GetEnvironmentVariable("PATH")!
-            .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries)
-            .Append(WingetLinks)
-            .Select(dir => Path.Combine(dir, "ffmpeg.exe"))
-            .Prepend(Path.Combine(AppContext.BaseDirectory, "ffmpeg.exe"));
+        IEnumerable<string> candidates = CandidateFolders().Select(dir => Path.Combine(dir, "ffmpeg.exe"));
         if (!string.IsNullOrWhiteSpace(configuredPath))
             candidates = candidates.Prepend(Environment.ExpandEnvironmentVariables(configuredPath));
 
@@ -40,6 +35,42 @@ internal sealed class Ffmpeg
                 return new Ffmpeg(ffmpeg, ffprobe);
         }
         return null;
+    }
+
+    private static IEnumerable<string> CandidateFolders()
+    {
+        yield return AppContext.BaseDirectory;
+        yield return Setup.FfmpegInstaller.DownloadFolder;
+
+        // PATH as this process got it, plus the current registry values: installers (winget included) update PATH
+        // after we started, and running processes never see that.
+        foreach (string? path in new[]
+                 {
+                     Environment.GetEnvironmentVariable("PATH"),
+                     Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.User),
+                     Environment.GetEnvironmentVariable("PATH", EnvironmentVariableTarget.Machine),
+                 })
+        {
+            foreach (string dir in (path ?? "").Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries))
+                yield return Environment.ExpandEnvironmentVariables(dir);
+        }
+
+        // winget links portable packages into Links only when it may create symlinks (Developer Mode or admin);
+        // otherwise the files stay in the package folder.
+        yield return Path.Combine(WingetFolder, "Links");
+        foreach (string bin in WingetPackageBins(Path.Combine(WingetFolder, "Packages")))
+            yield return bin;
+    }
+
+    /// <summary>The bin folders of Gyan.FFmpeg packages under winget's Packages folder.</summary>
+    internal static IEnumerable<string> WingetPackageBins(string packagesFolder)
+    {
+        if (!Directory.Exists(packagesFolder))
+            return [];
+        return Directory.EnumerateDirectories(packagesFolder, "Gyan.FFmpeg*")
+            .SelectMany(package => Directory.EnumerateDirectories(package, "ffmpeg-*"))
+            .Select(build => Path.Combine(build, "bin"))
+            .Where(Directory.Exists);
     }
 
     /// <summary>

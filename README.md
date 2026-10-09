@@ -17,8 +17,9 @@ A clip is encoded to fit your Discord upload limit at the best quality that fits
 ## Install
 
 Run `Snipperoo.exe`. A short setup asks for your Discord plan and your shortcuts, then installs Snipperoo for your
-user account (no admin rights needed) and puts it in the tray. It also sets up ffmpeg through winget if it is
-missing. Uninstall it from Windows Settings → Apps, or from Snipperoo's Settings.
+user account (no admin rights needed) and puts it in the tray. It also downloads ffmpeg (the video engine) if it is
+missing. To update, run a newer `Snipperoo.exe`; it replaces the installed one. Uninstall it from Windows
+Settings → Apps, or from Snipperoo's Settings.
 
 Windows 11 hides new tray icons under the ^ arrow; drag Snipperoo's icon onto the taskbar to keep it visible.
 
@@ -33,8 +34,9 @@ Running the Debug build (`dotnet run --project src/Snipperoo`) skips the install
 ## Tests
 
 ```
-dotnet test --filter "Category!=Integration"   # unit tests
+dotnet test --filter "Category!=Integration&Category!=Network"   # unit tests
 dotnet test --filter Category=Integration        # records ~4 s on each monitor and encodes it
+dotnet test --filter Category=Network            # downloads ffmpeg (~110 MB) the way the fallback does
 ```
 
 Logs go to `%APPDATA%\Snipperoo\snipperoo.log`. How it works, and why: [docs/DESIGN.md](docs/DESIGN.md).

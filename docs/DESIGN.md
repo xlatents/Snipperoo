@@ -7,8 +7,8 @@ Discord size limit, or a PNG) is on the clipboard.
 
 1. Running the downloaded `Snipperoo.exe` opens a three-step wizard (`Ui/SetupWindow`): pick a Discord plan
    (Free 10 MB / Nitro Basic 50 MB / Nitro 500 MB, which sets the size limit) → pick the two shortcuts → done
-   (Start with Windows toggle). ffmpeg is checked and, if missing, installed with `winget install Gyan.FFmpeg`
-   in the background while the user clicks through.
+   (Start with Windows toggle). ffmpeg is checked and, if missing, set up in the background while the user
+   clicks through (see "Getting ffmpeg").
 2. On Finish, `Setup/Installer` copies the exe to `%LOCALAPPDATA%\Programs\Snipperoo` (per user, no admin), adds a
    Start Menu shortcut and an Apps & features entry (`UninstallString` = `Snipperoo.exe --uninstall`), then starts
    the installed copy with `--welcome` and exits.
@@ -17,7 +17,24 @@ Discord size limit, or a PNG) is on the clipboard.
 4. Uninstall (from Apps & features or Settings) closes the running instance and removes the shortcut, registry
    entries, settings and the install folder. Clips and screenshots are kept.
 
-A dev build (`Snipperoo.dll` next to the exe) skips the install step and runs in place.
+Running a downloaded `Snipperoo.exe` after setup is an update: it tells the running copy to exit, replaces the
+installed exe, and starts it again. A dev build (`Snipperoo.dll` next to the exe) skips installing and runs in place.
+
+### Getting ffmpeg
+
+`FfmpegInstaller` tries, in order:
+1. **Already present.** `Ffmpeg.Locate` checks the configured path, next to the exe, Snipperoo's own copy, PATH
+   (both the process's and the current registry values, since installers change PATH after we start), winget's
+   `Links` folder, and winget's `Packages\Gyan.FFmpeg*\ffmpeg-*\bin` folders.
+2. **winget** (`Gyan.FFmpeg`). winget creates the `Links` symlinks only with Developer Mode or admin rights. Otherwise
+   it adds the package folder to the user PATH, which a running process never sees, so the registry PATH and
+   package-folder checks above matter.
+3. **Direct download** of the "essentials" build from the GitHub releases winget's package uses
+   (`GyanD/codexffmpeg`). It is checked against GitHub's SHA-256 digest, and only ffmpeg.exe and ffprobe.exe are
+   kept, in `%LOCALAPPDATA%\Programs\Snipperoo\ffmpeg`, so uninstalling removes them.
+
+If setup ends without ffmpeg, the tray retries on start, and Settings → Capture has a retry button. Screenshots
+work without it.
 
 ## User flow
 

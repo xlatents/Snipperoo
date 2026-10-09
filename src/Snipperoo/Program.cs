@@ -8,7 +8,8 @@ namespace Snipperoo;
 
 /// <summary>
 /// Entry point. First run shows the setup wizard, installs to %LOCALAPPDATA%\Programs and restarts from there;
-/// later runs go straight to the tray. "--uninstall" (from Apps &amp; features) removes the app.
+/// later runs go straight to the tray. Running a downloaded exe after setup updates the installed copy.
+/// "--uninstall" (from Apps &amp; features) removes the app.
 /// </summary>
 internal static class Program
 {
@@ -29,15 +30,27 @@ internal static class Program
             return;
         }
 
-        using var instance = SingleInstance.TryAcquire(args.Contains(WelcomeArgument) ? TimeSpan.FromSeconds(5) : TimeSpan.Zero);
+        var settings = AppSettings.Load();
+        bool isUpdate = settings.SetupComplete && Installer.CanInstall && !Installer.IsRunningInstalled;
+        if (isUpdate)
+            SingleInstance.SignalExit(); // the installed copy must exit before its exe can be replaced
+
+        var wait = isUpdate || args.Contains(WelcomeArgument) ? TimeSpan.FromSeconds(5) : TimeSpan.Zero;
+        using var instance = SingleInstance.TryAcquire(wait);
         if (instance is null)
         {
             SingleInstance.SignalShowSettings();
             return;
         }
 
+        if (isUpdate && TryInstall())
+        {
+            instance.Release();
+            Process.Start(Installer.InstalledExe, WelcomeArgument);
+            return;
+        }
+
         var app = CreateApplication();
-        var settings = AppSettings.Load();
         if (settings.SetupComplete)
             StartTray(app, instance, settings, welcome: args.Contains(WelcomeArgument));
         else

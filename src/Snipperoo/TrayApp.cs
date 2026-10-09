@@ -57,7 +57,7 @@ internal sealed class TrayApp : IDisposable
         UpdateMenu();
 
         if (_ffmpeg is null)
-            ShowError("Video engine missing", "Click to set it up in Settings.", () => ShowSettings(SettingsPage.Capture));
+            _ = SetUpFfmpegAsync();
         else if (welcome)
             Toast.Show("Snipperoo is ready",
                 $"{Display(settings.RecordHotkey)} to record, {Display(settings.ScreenshotHotkey)} for a screenshot. I'm in your tray.",
@@ -98,6 +98,22 @@ internal sealed class TrayApp : IDisposable
         _settingsWindow.ShowPage(page);
         _settingsWindow.Show();
         _settingsWindow.Activate();
+    }
+
+    // Runs on start when ffmpeg is missing, e.g. when setup could not get it; screenshots work meanwhile.
+    private async Task SetUpFfmpegAsync()
+    {
+        Toast.Show("Getting the video engine ready", "A one-time download of ffmpeg. Screenshots already work.");
+        try
+        {
+            UseFfmpeg(await FfmpegInstaller.EnsureAsync(_settings.FfmpegPath));
+            Toast.Show("Ready to record", $"{Display(_settings.RecordHotkey)} to record a clip.");
+        }
+        catch (Exception ex)
+        {
+            Log.Error("Video engine setup failed", ex);
+            ShowError("Video engine missing", $"{ex.Message} Click to retry in Settings.", () => ShowSettings(SettingsPage.Capture));
+        }
     }
 
     private void UseFfmpeg(Ffmpeg? ffmpeg)
@@ -172,7 +188,8 @@ internal sealed class TrayApp : IDisposable
     {
         if (purpose == SelectionPurpose.Record && _ffmpeg is null)
         {
-            ShowError("Video engine missing", "Click to set it up in Settings.", () => ShowSettings(SettingsPage.Capture));
+            ShowError("Video engine not ready", "Recording needs ffmpeg. Click to check on it in Settings.",
+                () => ShowSettings(SettingsPage.Capture));
             return;
         }
 

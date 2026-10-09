@@ -28,7 +28,9 @@ internal partial class EngineStatus : UserControl
         ShowState(busy: true, ok: false, "Setting up the video engine…", "A one-time download of ffmpeg. This can take a minute.");
         try
         {
-            var ffmpeg = await FfmpegInstaller.EnsureAsync(configuredPath);
+            // Progress<T> posts back to the UI thread.
+            var progress = new Progress<string>(status => Detail.Text = status);
+            var ffmpeg = await FfmpegInstaller.EnsureAsync(configuredPath, progress);
             IsReady = true;
             ShowState(busy: false, ok: true, "Video engine ready", "Recording and encoding are good to go.");
             Ready?.Invoke(ffmpeg);
