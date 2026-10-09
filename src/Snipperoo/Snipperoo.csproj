@@ -1,0 +1,38 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <!-- WPF for the windows (setup, settings, toasts); WinForms for the tray icon and the capture overlay. -->
+    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\snipperoo.ico</ApplicationIcon>
+    <AssemblyName>Snipperoo</AssemblyName>
+    <RootNamespace>Snipperoo</RootNamespace>
+    <Version>1.0.0</Version>
+    <Product>Snipperoo</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Both UI stacks define Color, Point, Application...; files import the one they use explicitly. -->
+    <Using Remove="System.Windows.Forms" />
+    <Using Remove="System.Drawing" />
+    <!-- WPF drops System.IO (Path clashes with Shapes.Path); no code file uses WPF shapes. -->
+    <Using Include="System.IO" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\snipperoo.ico" />
+    <InternalsVisibleTo Include="Snipperoo.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="NAudio.Wasapi" Version="3.1.0" />
+    <PackageReference Include="Vortice.DXGI" Version="3.8.3" />
+  </ItemGroup>
+
+</Project>

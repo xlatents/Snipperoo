@@ -1,0 +1,38 @@
+<Window x:Class="Snipperoo.Ui.Toast" x:ClassModifier="internal"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent" ResizeMode="NoResize"
+        ShowInTaskbar="False" Topmost="True" ShowActivated="False" SizeToContent="Height" Width="410"
+        UseLayoutRounding="True" Cursor="Hand">
+    <!-- The margin leaves room for the shadow inside the transparent window. -->
+    <Border x:Name="Card" Margin="18" CornerRadius="16" Background="{StaticResource SurfaceBrush}"
+            BorderBrush="{StaticResource StrokeBrush}" BorderThickness="1">
+        <Border.Effect>
+            <DropShadowEffect Color="Black" BlurRadius="28" ShadowDepth="6" Opacity="0.55" />
+        </Border.Effect>
+        <Grid>
+            <Grid Margin="14,14,16,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Border x:Name="Thumb" Width="112" Height="63" CornerRadius="9" Background="{StaticResource SurfaceHiBrush}" Visibility="Collapsed">
+                    <Border.Effect>
+                        <DropShadowEffect Color="Black" BlurRadius="10" ShadowDepth="2" Opacity="0.35" />
+                    </Border.Effect>
+                </Border>
+                <Border x:Name="IconBadge" Style="{StaticResource IconBadge}" Background="{StaticResource AccentBrush}">
+                    <TextBlock x:Name="IconGlyph" Style="{StaticResource IconText}" Foreground="White" />
+                </Border>
+                <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
+                    <TextBlock x:Name="TitleText" Style="{StaticResource StrongText}" TextWrapping="Wrap" />
+                    <TextBlock x:Name="DetailText" Style="{StaticResource CaptionText}" Margin="0,3,0,0" />
+                    <TextBlock x:Name="HintText" Style="{StaticResource CaptionText}" Foreground="{StaticResource FaintBrush}" FontSize="11.5" Margin="0,5,0,0" />
+                </StackPanel>
+            </Grid>
+            <!-- Countdown until the toast hides. -->
+            <Border x:Name="Countdown" Height="3" CornerRadius="1.5" VerticalAlignment="Bottom" HorizontalAlignment="Left"
+                    Margin="16,0,16,6" Background="{StaticResource AccentBrush}" Opacity="0.8" />
+        </Grid>
+    </Border>
+</Window>

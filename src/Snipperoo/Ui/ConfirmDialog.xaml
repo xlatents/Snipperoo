@@ -1,0 +1,17 @@
+<ui:ThemedWindow x:Class="Snipperoo.Ui.ConfirmDialog" x:ClassModifier="internal"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:ui="clr-namespace:Snipperoo.Ui"
+                 Width="440" SizeToContent="Height" ShowInTaskbar="False">
+    <StackPanel>
+        <ui:TitleBar />
+        <StackPanel Margin="32,4,32,28">
+            <TextBlock x:Name="HeadingText" Style="{StaticResource TitleText}" FontSize="20" />
+            <TextBlock x:Name="MessageText" Style="{StaticResource SubtitleText}" Margin="0,10,0,28" />
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button Style="{StaticResource GhostButton}" Content="Cancel" IsCancel="True" Margin="0,0,8,0" />
+                <Button x:Name="ConfirmButton" Style="{StaticResource PrimaryButton}" Click="OnConfirm" />
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</ui:ThemedWindow>

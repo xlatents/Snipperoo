@@ -1,0 +1,24 @@
+<UserControl x:Class="Snipperoo.Ui.EngineStatus" x:ClassModifier="internal"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid Margin="0,12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Border Style="{StaticResource IconBadge}">
+            <Grid>
+                <Path x:Name="Spinner" Style="{StaticResource Spinner}" />
+                <TextBlock x:Name="ReadyIcon" Style="{StaticResource IconText}" Text="&#xE73E;" Foreground="{StaticResource SuccessBrush}" Visibility="Collapsed" />
+                <TextBlock x:Name="FailedIcon" Style="{StaticResource IconText}" Text="&#xE7BA;" Foreground="{StaticResource DangerBrush}" Visibility="Collapsed" />
+            </Grid>
+        </Border>
+        <StackPanel Grid.Column="1" Margin="14,0,12,0" VerticalAlignment="Center">
+            <TextBlock x:Name="Headline" Style="{StaticResource StrongText}" Text="Setting up the video engine…" Margin="0,0,0,2" />
+            <TextBlock x:Name="Detail" Style="{StaticResource CaptionText}" Text="A one-time download of ffmpeg. This can take a minute." />
+        </StackPanel>
+        <Button x:Name="RetryButton" Grid.Column="2" Style="{StaticResource SmallButton}" Content="Try again"
+                VerticalAlignment="Center" Visibility="Collapsed" Click="OnRetry" />
+    </Grid>
+</UserControl>

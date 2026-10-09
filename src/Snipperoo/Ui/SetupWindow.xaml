@@ -1,0 +1,102 @@
+<ui:ThemedWindow x:Class="Snipperoo.Ui.SetupWindow" x:ClassModifier="internal"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:ui="clr-namespace:Snipperoo.Ui"
+                 Title="Welcome to Snipperoo" Width="620" Height="600">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Soft glow behind the content, top-left, in the accent colour. -->
+        <Ellipse Grid.RowSpan="3" Width="520" Height="420" Margin="-220,-200,0,0" HorizontalAlignment="Left" VerticalAlignment="Top"
+                 IsHitTestVisible="False" Opacity="0.22">
+            <Ellipse.Fill>
+                <RadialGradientBrush>
+                    <GradientStop Color="{StaticResource AccentStart}" Offset="0" />
+                    <GradientStop Color="Transparent" Offset="1" />
+                </RadialGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+
+        <ui:TitleBar />
+
+        <Grid Grid.Row="1" Margin="44,12,44,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!-- Step indicator -->
+            <StackPanel Orientation="Horizontal">
+                <Border x:Name="Dot1" Height="5" CornerRadius="2.5" Margin="0,0,6,0" />
+                <Border x:Name="Dot2" Height="5" CornerRadius="2.5" Margin="0,0,6,0" />
+                <Border x:Name="Dot3" Height="5" CornerRadius="2.5" Margin="0,0,14,0" />
+                <TextBlock x:Name="StepText" Style="{StaticResource CaptionText}" VerticalAlignment="Center" />
+            </StackPanel>
+
+            <Grid x:Name="Pages" Grid.Row="1" Margin="0,26,0,0">
+                <Grid.RenderTransform>
+                    <TranslateTransform x:Name="PageShift" />
+                </Grid.RenderTransform>
+
+                <!-- 1: Discord plan -->
+                <StackPanel x:Name="PlanPage">
+                    <TextBlock Style="{StaticResource TitleText}" Text="Hey! Which Discord do you have?" />
+                    <TextBlock Style="{StaticResource SubtitleText}" Margin="0,10,0,0"
+                               Text="Every clip is squeezed to fit your upload limit, at the best quality that fits. Paste it straight into a chat." />
+                    <ui:PlanPicker x:Name="Plan" Margin="0,30,0,0" />
+                    <StackPanel Orientation="Horizontal" Margin="4,20,0,0">
+                        <TextBlock Style="{StaticResource IconText}" Text="&#xE946;" FontSize="13" Foreground="{StaticResource FaintBrush}" />
+                        <TextBlock Style="{StaticResource CaptionText}" Foreground="{StaticResource FaintBrush}" Margin="8,0,0,0"
+                                   Text="Not sure? Pick Free. You can change it any time in Settings." />
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- 2: Shortcuts -->
+                <StackPanel x:Name="ShortcutsPage" Visibility="Collapsed">
+                    <TextBlock Style="{StaticResource TitleText}" Text="Pick your shortcuts" />
+                    <TextBlock Style="{StaticResource SubtitleText}" Margin="0,10,0,0"
+                               Text="Click a shortcut, then press the keys you want to use." />
+                    <ui:ShortcutsEditor x:Name="Shortcuts" Margin="0,30,0,0" />
+                    <Border Margin="0,16,0,0" CornerRadius="12" Background="{StaticResource SurfaceBrush}" Padding="16,12" Opacity="0.85">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Style="{StaticResource IconText}" Text="&#xE946;" FontSize="14" Foreground="{StaticResource AccentSolidBrush}" VerticalAlignment="Top" Margin="0,2,0,0" />
+                            <TextBlock Style="{StaticResource CaptionText}" Margin="10,0,0,0" MaxWidth="470"
+                                       Text="When picking: hover a window to grab it, drag to mark your own area, or right-click to cancel." />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- 3: Done -->
+                <StackPanel x:Name="DonePage" Visibility="Collapsed">
+                    <Image Source="{x:Static ui:AppAssets.Logo}" Width="84" Height="84" HorizontalAlignment="Center"
+                           RenderOptions.BitmapScalingMode="HighQuality">
+                        <Image.Effect>
+                            <DropShadowEffect Color="{StaticResource AccentStart}" BlurRadius="40" ShadowDepth="0" Opacity="0.6" />
+                        </Image.Effect>
+                    </Image>
+                    <TextBlock Style="{StaticResource TitleText}" Text="You're all set" HorizontalAlignment="Center" Margin="0,22,0,0" />
+                    <TextBlock Style="{StaticResource SubtitleText}" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,8,0,0"
+                               Text="Snipperoo lives in your tray. Use a shortcut whenever you need it." />
+                    <Border Style="{StaticResource Card}" Margin="0,26,0,0">
+                        <StackPanel>
+                            <ui:SwitchRow x:Name="AutoStart" Glyph="&#xE7E8;" Title="Start with Windows"
+                                          Description="Be ready the moment you log in." IsOn="True" />
+                            <Border Height="1" Background="{StaticResource StrokeBrush}" />
+                            <ui:EngineStatus x:Name="Engine" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="2" Margin="44,0,44,34">
+            <Button x:Name="BackButton" Style="{StaticResource GhostButton}" Content="Back" HorizontalAlignment="Left"
+                    Visibility="Hidden" Click="OnBack" />
+            <Button x:Name="NextButton" Style="{StaticResource PrimaryButton}" HorizontalAlignment="Right" Click="OnNext" />
+        </Grid>
+    </Grid>
+</ui:ThemedWindow>

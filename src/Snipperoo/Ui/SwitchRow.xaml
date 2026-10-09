@@ -1,0 +1,19 @@
+<UserControl x:Class="Snipperoo.Ui.SwitchRow" x:ClassModifier="internal"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <CheckBox x:Name="Toggle" Style="{StaticResource ToggleSwitch}" Margin="0,12" Click="OnClick">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Border Style="{StaticResource IconBadge}">
+                <TextBlock x:Name="GlyphText" Style="{StaticResource IconText}" />
+            </Border>
+            <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
+                <TextBlock x:Name="TitleText" Style="{StaticResource StrongText}" Margin="0,0,0,2" />
+                <TextBlock x:Name="DescriptionText" Style="{StaticResource CaptionText}" />
+            </StackPanel>
+        </Grid>
+    </CheckBox>
+</UserControl>

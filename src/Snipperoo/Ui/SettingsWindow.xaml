@@ -1,0 +1,98 @@
+<ui:ThemedWindow x:Class="Snipperoo.Ui.SettingsWindow" x:ClassModifier="internal"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:ui="clr-namespace:Snipperoo.Ui"
+                 Title="Snipperoo Settings" Width="820" Height="580">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="220" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Border Grid.RowSpan="2" Background="#13141B" BorderBrush="{StaticResource StrokeBrush}" BorderThickness="0,0,1,0" />
+        <ui:TitleBar x:Name="Bar" Grid.ColumnSpan="2" Caption="Settings" />
+
+        <!-- Sidebar -->
+        <Grid Grid.Row="1" Margin="14,8,14,18">
+            <StackPanel>
+                <RadioButton x:Name="GeneralNav" Style="{StaticResource NavItem}" Tag="&#xE80F;" Content="General" IsChecked="True" Checked="OnNav" />
+                <RadioButton x:Name="ShortcutsNav" Style="{StaticResource NavItem}" Tag="&#xE765;" Content="Shortcuts" Checked="OnNav" />
+                <RadioButton x:Name="CaptureNav" Style="{StaticResource NavItem}" Tag="&#xE714;" Content="Capture" Checked="OnNav" />
+            </StackPanel>
+            <StackPanel VerticalAlignment="Bottom">
+                <Button Style="{StaticResource DangerLinkButton}" HorizontalAlignment="Left" Click="OnUninstall">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource IconText}" Text="&#xE74D;" FontSize="13" Foreground="{StaticResource DangerBrush}" />
+                        <TextBlock Text="Uninstall" Margin="10,0,0,0" />
+                    </StackPanel>
+                </Button>
+                <TextBlock x:Name="VersionText" Style="{StaticResource CaptionText}" Foreground="{StaticResource FaintBrush}" Margin="12,8,0,0" />
+            </StackPanel>
+        </Grid>
+
+        <!-- Pages -->
+        <Grid Grid.Row="1" Grid.Column="1" Margin="36,8,36,28">
+            <StackPanel x:Name="GeneralPage">
+                <TextBlock Style="{StaticResource TitleText}" FontSize="22" Text="General" />
+                <TextBlock Style="{StaticResource SubtitleText}" Margin="0,6,0,24" Text="Changes are saved as you make them." />
+                <TextBlock Style="{StaticResource SectionText}" Text="Discord plan" />
+                <ui:PlanPicker x:Name="Plan" />
+                <TextBlock Style="{StaticResource SectionText}" Text="App" Margin="4,24,0,10" />
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <ui:SwitchRow x:Name="AutoStart" Glyph="&#xE7E8;" Title="Start with Windows" Description="Be ready the moment you log in." />
+                        <Border Height="1" Background="{StaticResource StrokeBrush}" />
+                        <Grid Margin="0,12">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Border Style="{StaticResource IconBadge}">
+                                <TextBlock Style="{StaticResource IconText}" Text="&#xE8B7;" />
+                            </Border>
+                            <StackPanel Grid.Column="1" Margin="14,0,12,0" VerticalAlignment="Center">
+                                <TextBlock Style="{StaticResource StrongText}" Text="Save to" Margin="0,0,0,2" />
+                                <TextBlock x:Name="FolderText" Style="{StaticResource CaptionText}" TextWrapping="NoWrap" TextTrimming="CharacterEllipsis" />
+                            </StackPanel>
+                            <Button Grid.Column="2" Style="{StaticResource SmallButton}" Content="Change" VerticalAlignment="Center" Click="OnChangeFolder" />
+                        </Grid>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <StackPanel x:Name="ShortcutsPage" Visibility="Collapsed">
+                <TextBlock Style="{StaticResource TitleText}" FontSize="22" Text="Shortcuts" />
+                <TextBlock Style="{StaticResource SubtitleText}" Margin="0,6,0,24" Text="Click a shortcut, then press the keys you want to use." />
+                <ui:ShortcutsEditor x:Name="Shortcuts" />
+                <Border Margin="0,16,0,0" CornerRadius="12" Background="{StaticResource SurfaceBrush}" Padding="16,12" Opacity="0.85">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Style="{StaticResource IconText}" Text="&#xE946;" FontSize="14" Foreground="{StaticResource AccentSolidBrush}" VerticalAlignment="Top" Margin="0,2,0,0" />
+                        <TextBlock Style="{StaticResource CaptionText}" Margin="10,0,0,0" MaxWidth="460"
+                                   Text="When picking: hover a window to grab it, drag to mark your own area, or right-click to cancel." />
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <StackPanel x:Name="CapturePage" Visibility="Collapsed">
+                <TextBlock Style="{StaticResource TitleText}" FontSize="22" Text="Capture" />
+                <TextBlock Style="{StaticResource SubtitleText}" Margin="0,6,0,24" Text="What goes into your clips." />
+                <Border Style="{StaticResource Card}">
+                    <StackPanel>
+                        <ui:SwitchRow x:Name="Audio" Glyph="&#xE767;" Title="Record system audio" Description="Include whatever your PC is playing." />
+                        <Border Height="1" Background="{StaticResource StrokeBrush}" />
+                        <ui:SwitchRow x:Name="CursorSwitch" Glyph="&#xE962;" Title="Show mouse cursor" Description="Draw the pointer in recordings." />
+                    </StackPanel>
+                </Border>
+                <TextBlock Style="{StaticResource SectionText}" Text="Video engine" Margin="4,24,0,10" />
+                <Border Style="{StaticResource Card}">
+                    <ui:EngineStatus x:Name="Engine" />
+                </Border>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</ui:ThemedWindow>
